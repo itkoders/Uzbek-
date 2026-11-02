@@ -21,7 +21,10 @@ jobs:
         with:
           gradle-version: '8.9'
       - name: Assemble debug APK
-        run: gradle --no-daemon --no-configuration-cache :app:assembleDebug
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: gradle --no-daemon --no-configuration-cache -PSUPABASE_URL="$SUPABASE_URL" -PSUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" :app:assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: AlfaPlay-debug-apk

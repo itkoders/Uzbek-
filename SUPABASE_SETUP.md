@@ -21,3 +21,18 @@ The Android client now contains Supabase authentication and REST integration. A 
 The SQL creates tables and row-level security policies; it does not create a payment gateway, upload storage bucket, or Android integration by itself. Payment activation must be performed by a trusted server/Edge Function after a verified provider callback. Never let the Android client grant itself Premium.
 
 The existing debug APK remains a local demo until the Supabase credentials and client integration are configured.
+
+
+## Google Play v1.0.0 release
+
+The app is configured as version 1.0.0 (versionCode 1), compile/target SDK 36. The signed Android App Bundle workflow is `.github/workflows/android-release.yml`.
+
+Before running it, add these GitHub Actions repository secrets:
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `ALFAPLAY_KEYSTORE_BASE64` (base64-encoded JKS/keystore file)
+- `ALFAPLAY_STORE_PASSWORD`
+- `ALFAPLAY_KEY_ALIAS`
+- `ALFAPLAY_KEY_PASSWORD`
+
+Keep the signing keystore and passwords in a safe backup. Losing the upload key can delay future updates; do not commit it to the repository.

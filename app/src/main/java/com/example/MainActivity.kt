@@ -116,7 +116,9 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        if(selected!=null) {
+                        if(playingFilm!=null) {
+                            VideoPlayerPage(playingFilm!!,{playingFilm=null})
+                        } else if(selected!=null) {
                             FilmDetail(selected!!,saved.contains(selected!!.id),{
                                 val film=selected!!
                                 val next=if(saved.contains(film.id)) saved-film.id else saved+film.id
@@ -224,6 +226,32 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+
+@Composable
+private fun VideoPlayerPage(film:Film,onBack:()->Unit) {
+    val context=LocalContext.current
+    val player=remember(film.url) {
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(film.url))
+            prepare()
+            playWhenReady=true
+        }
+    }
+    DisposableEffect(player) {
+        onDispose { player.release() }
+    }
+    Column(Modifier.fillMaxSize().padding(16.dp)) {
+        Text("‹  ORQAGA",color=Gold,fontWeight=FontWeight.Bold,modifier=Modifier.clickable{onBack()}.padding(vertical=10.dp))
+        AndroidView(
+            factory={ctx->PlayerView(ctx).apply { this.player=player; useController=true }},
+            update={view->view.player=player},
+            modifier=Modifier.fillMaxWidth().height(235.dp)
+        )
+        Text(film.title,color=Color.White,fontSize=21.sp,fontWeight=FontWeight.Bold,modifier=Modifier.padding(top=15.dp))
+        Text(film.summary,color=Muted,fontSize=13.sp,modifier=Modifier.padding(top=7.dp))
     }
 }
 

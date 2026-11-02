@@ -20,7 +20,26 @@ android {
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseAnonKey\"")
     }
 
-    signingConfigs {\n        create("release") {\n            val keyPath = System.getenv("ALFAPLAY_KEYSTORE_FILE")\n            if (!keyPath.isNullOrBlank()) {\n                storeFile = file(keyPath)\n                storePassword = System.getenv("ALFAPLAY_STORE_PASSWORD")\n                keyAlias = System.getenv("ALFAPLAY_KEY_ALIAS")\n                keyPassword = System.getenv("ALFAPLAY_KEY_PASSWORD")\n            }\n        }\n    }\n\n    buildTypes {\n        getByName("release") {\n            signingConfig = signingConfigs.getByName("release")\n            isMinifyEnabled = false\n        }\n    }\n\n    buildFeatures {
+    signingConfigs {
+        create("release") {
+            val keyPath = System.getenv("ALFAPLAY_KEYSTORE_FILE")
+            if (!keyPath.isNullOrBlank()) {
+                storeFile = file(keyPath)
+                storePassword = System.getenv("ALFAPLAY_STORE_PASSWORD")
+                keyAlias = System.getenv("ALFAPLAY_KEY_ALIAS")
+                keyPassword = System.getenv("ALFAPLAY_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+        }
+    }
+
+    buildFeatures {
         compose = true
         buildConfig = true
     }
@@ -41,6 +60,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")\n    implementation("androidx.media3:media3-exoplayer:1.5.1")\n    implementation("androidx.media3:media3-ui:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    implementation("androidx.media3:media3-exoplayer:1.5.1")
+    implementation("androidx.media3:media3-ui:1.5.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

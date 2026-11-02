@@ -4,7 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent\nimport androidx.compose.ui.viewinterop.AndroidView\nimport androidx.compose.ui.platform.LocalContext\nimport androidx.media3.common.MediaItem\nimport androidx.media3.exoplayer.ExoPlayer\nimport androidx.media3.ui.PlayerView
+import androidx.activity.compose.setContent
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.platform.LocalContext
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

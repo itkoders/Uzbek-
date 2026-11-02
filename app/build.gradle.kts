@@ -6,21 +6,21 @@ plugins {
 
 android {
     namespace = "com.example"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "uz.itkoders.alfaplay"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.0"
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0.0"
         val supabaseUrl = (project.findProperty("SUPABASE_URL") as String?) ?: ""
         val supabaseAnonKey = (project.findProperty("SUPABASE_ANON_KEY") as String?) ?: ""
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseAnonKey\"")
     }
 
-    buildFeatures {
+    signingConfigs {\n        create("release") {\n            val keyPath = System.getenv("ALFAPLAY_KEYSTORE_FILE")\n            if (!keyPath.isNullOrBlank()) {\n                storeFile = file(keyPath)\n                storePassword = System.getenv("ALFAPLAY_STORE_PASSWORD")\n                keyAlias = System.getenv("ALFAPLAY_KEY_ALIAS")\n                keyPassword = System.getenv("ALFAPLAY_KEY_PASSWORD")\n            }\n        }\n    }\n\n    buildTypes {\n        getByName("release") {\n            signingConfig = signingConfigs.getByName("release")\n            isMinifyEnabled = false\n        }\n    }\n\n    buildFeatures {
         compose = true
         buildConfig = true
     }

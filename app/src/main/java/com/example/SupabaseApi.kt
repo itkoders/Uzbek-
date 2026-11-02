@@ -23,17 +23,17 @@ class SupabaseApi(private val projectUrl:String, private val anonKey:String) {
     fun signUp(email:String,password:String,name:String):AuthResult {
         val body=JSONObject().put("email",email).put("password",password)
             .put("data",JSONObject().put("name",name))
-        return parseAuth(request("/auth/v1/signup","POST",body,null))
+        return parseAuth(request("/auth/v1/signup","POST",body,null) as JSONObject)
     }
 
     fun signIn(email:String,password:String):AuthResult {
         val body=JSONObject().put("email",email).put("password",password)
-        return parseAuth(request("/auth/v1/token?grant_type=password","POST",body,null))
+        return parseAuth(request("/auth/v1/token?grant_type=password","POST",body,null) as JSONObject)
     }
 
     fun refresh(refreshToken:String):AuthResult {
         val body=JSONObject().put("refresh_token",refreshToken)
-        return parseAuth(request("/auth/v1/token?grant_type=refresh_token","POST",body,null))
+        return parseAuth(request("/auth/v1/token?grant_type=refresh_token","POST",body,null) as JSONObject)
     }
 
     fun getMovies(accessToken:String?):List<RemoteMovie> {

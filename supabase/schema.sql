@@ -43,6 +43,7 @@ create table if not exists public.series (
   genres text[] not null default '{}',
   language text not null default 'uz',
   is_published boolean not null default false,
+  is_premium boolean not null default false,
   created_at timestamptz not null default now()
 );
 
@@ -136,6 +137,23 @@ as $$
   );
 $$;
 
+create or replace function public.has_active_premium()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $
+  select exists (
+    select 1
+    from public.subscriptions
+    where user_id = auth.uid()
+      and status = 'active'
+      and starts_at <= now()
+      and expires_at > now()
+  );
+$;
+
 alter table public.profiles enable row level security;
 alter table public.movies enable row level security;
 alter table public.series enable row level security;
@@ -173,18 +191,25 @@ create trigger on_auth_user_created
   for each row execute procedure public.handle_new_user();
 
 drop policy if exists "published movies read" on public.movies;
-create policy "published movies read" on public.movies for select to anon, authenticated using (is_published or public.is_admin());
+create policy "published movies read" on public.movies for select to anon, authenticated using ((is_published and (not is_premium or public.has_active_premium())) or public.is_admin());
 drop policy if exists "admin movies manage" on public.movies;
 create policy "admin movies manage" on public.movies for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "published series read" on public.series;
-create policy "published series read" on public.series for select to anon, authenticated using (is_published or public.is_admin());
+create policy "published series read" on public.series for select to anon, authenticated using ((is_published and (not is_premium or public.has_active_premium())) or public.is_admin());
 drop policy if exists "admin series manage" on public.series;
 create policy "admin series manage" on public.series for all to authenticated using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "published episodes read" on public.episodes;
 create policy "published episodes read" on public.episodes for select to anon, authenticated using (
-  is_published or public.is_admin()
+  public.is_admin() or (
+    is_published and exists (
+      select 1 from public.series s
+      where s.id = series_id
+        and s.is_published
+        and (not s.is_premium or public.has_active_premium())
+    )
+  )
 );
 drop policy if exists "admin episodes manage" on public.episodes;
 create policy "admin episodes manage" on public.episodes for all to authenticated using (public.is_admin()) with check (public.is_admin());

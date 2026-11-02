@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import androidx.activity.compose.setContent\nimport androidx.compose.ui.viewinterop.AndroidView\nimport androidx.compose.ui.platform.LocalContext\nimport androidx.media3.common.MediaItem\nimport androidx.media3.exoplayer.ExoPlayer\nimport androidx.media3.ui.PlayerView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
             val api= remember { SupabaseApi(BuildConfig.SUPABASE_URL,BuildConfig.SUPABASE_ANON_KEY) }
             val scope= rememberCoroutineScope()
             var tab by remember { mutableStateOf("Asosiy") }
-            var selected by remember { mutableStateOf<Film?>(null) }
+            var selected by remember { mutableStateOf<Film?>(null) }\n            var playingFilm by remember { mutableStateOf<Film?>(null) }
             var query by remember { mutableStateOf("") }
             var accessToken by remember { mutableStateOf(prefs.getString("access_token",null)) }
             var refreshToken by remember { mutableStateOf(prefs.getString("refresh_token",null)) }
@@ -128,7 +128,7 @@ class MainActivity : ComponentActivity() {
                                         catch(e:Exception) { status="Sevimlilar serverga saqlanmadi: ${e.message}" }
                                     }
                                 }
-                            },{ film -> if(film.url.isNotBlank()) startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(film.url))) else status="Bu kino uchun video manbasi kiritilmagan." },{selected=null})
+                            },{ film -> if(film.url.startsWith("https://") || film.url.startsWith("http://")) playingFilm=film else status="Bu kino uchun video manbasi kiritilmagan." },{selected=null})
                         } else {
                             val catalog=if(api.isConfigured) serverFilms else sampleFilms
                             when(tab) {
@@ -213,7 +213,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        if(selected==null) NavigationBar(containerColor=Panel) {
+                        if(selected==null && playingFilm==null) NavigationBar(containerColor=Panel) {
                             val tabs=buildList { addAll(listOf("Asosiy","Qidiruv","Saqlangan","Obuna","Profil")); if(role=="admin") add("Admin") }
                             tabs.forEach { item ->
                                 val icon=when(item) {"Asosiy"->Icons.Default.Home;"Qidiruv"->Icons.Default.Search;"Saqlangan"->Icons.Default.Bookmark;"Obuna"->Icons.Default.Star;"Admin"->Icons.Default.AdminPanelSettings;else->Icons.Default.Person}

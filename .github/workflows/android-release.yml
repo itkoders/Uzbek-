@@ -27,11 +27,15 @@ jobs:
           STORE_PASSWORD: ${{ secrets.ALFAPLAY_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ALFAPLAY_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ALFAPLAY_KEY_PASSWORD }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           test -n "$KEYSTORE_BASE64" || (echo "Missing ALFAPLAY_KEYSTORE_BASE64" && exit 1)
           test -n "$STORE_PASSWORD" || (echo "Missing ALFAPLAY_STORE_PASSWORD" && exit 1)
           test -n "$KEY_ALIAS" || (echo "Missing ALFAPLAY_KEY_ALIAS" && exit 1)
           test -n "$KEY_PASSWORD" || (echo "Missing ALFAPLAY_KEY_PASSWORD" && exit 1)
+          test -n "$SUPABASE_URL" || (echo "Missing SUPABASE_URL: release requires the real backend" && exit 1)
+          test -n "$SUPABASE_ANON_KEY" || (echo "Missing SUPABASE_ANON_KEY: release requires the real backend" && exit 1)
           mkdir -p app/keystore
           echo "$KEYSTORE_BASE64" | base64 --decode > app/keystore/alfaplay-release.jks
 

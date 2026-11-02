@@ -7,7 +7,7 @@ The Android client now contains Supabase authentication and REST integration. A 
 2. Open SQL Editor and run `supabase/schema.sql`.
 3. In Authentication, enable Email/Password sign-in.
 4. Create your first account in the app/backend, then promote its profile to admin using the SQL comment at the bottom of the schema.
-5. In the repository's root `gradle.properties` (or your local Gradle user properties), add `SUPABASE_URL=https://YOUR_PROJECT.supabase.co` and `SUPABASE_ANON_KEY=YOUR_PUBLISHABLE_ANON_KEY`, then rebuild. Do not commit real keys to a public repository. Never put the `service_role` key in an APK or public repository. The URL and anon key are public-client values protected by the database RLS policies.
+5. For GitHub Actions APK builds, open the repository Settings → Secrets and variables → Actions, then add repository secrets named `SUPABASE_URL` and `SUPABASE_ANON_KEY`. For a local build, pass the matching Gradle properties. Never add the `service_role` key. The anon key is a public-client key and database access is controlled by RLS.
 
 ## Database modules
 - profiles and admin role

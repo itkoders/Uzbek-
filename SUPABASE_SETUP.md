@@ -1,6 +1,6 @@
 # AlfaPlay — backend setup
 
-The Android APK currently has a local-only prototype. This repository now includes a Supabase schema for the production backend.
+The Android client now contains Supabase authentication and REST integration. A real backend is required before server features can run.
 
 ## Create backend
 1. Create a Supabase project.

@@ -56,7 +56,25 @@ class SupabaseApi(private val projectUrl:String, private val anonKey:String) {
         }
     }
 
-    fun getProfileRole(accessToken:String,userId:String):String {\n        val json=request("/rest/v1/profiles?select=role,is_banned&id=eq.$userId","GET",null,accessToken) as JSONArray\n        if(json.length()==0) return "user"\n        val profile=json.getJSONObject(0)\n        if(profile.optBoolean("is_banned",false)) throw IllegalStateException("Hisobingiz bloklangan.")\n        return profile.optString("role","user")\n    }\n\n    fun createMovie(accessToken:String,title:String,description:String,year:Int,videoUrl:String) {\n        val body=JSONArray().put(JSONObject().put("title",title).put("description",description).put("year",year)\n            .put("video_url",videoUrl).put("is_published",true))\n        request("/rest/v1/movies","POST",body,accessToken,mapOf("Prefer" to "return=minimal"))\n    }\n\n    fun deleteMovie(accessToken:String,movieId:String) {\n        request("/rest/v1/movies?id=eq.$movieId","DELETE",null,accessToken)\n    }\n\n    fun getFavoriteIds(accessToken:String,userId:String):Set<String> {
+    fun getProfileRole(accessToken:String,userId:String):String {
+        val json=request("/rest/v1/profiles?select=role,is_banned&id=eq.$userId","GET",null,accessToken) as JSONArray
+        if(json.length()==0) return "user"
+        val profile=json.getJSONObject(0)
+        if(profile.optBoolean("is_banned",false)) throw IllegalStateException("Hisobingiz bloklangan.")
+        return profile.optString("role","user")
+    }
+
+    fun createMovie(accessToken:String,title:String,description:String,year:Int,videoUrl:String) {
+        val body=JSONArray().put(JSONObject().put("title",title).put("description",description).put("year",year)
+            .put("video_url",videoUrl).put("is_published",true))
+        request("/rest/v1/movies","POST",body,accessToken,mapOf("Prefer" to "return=minimal"))
+    }
+
+    fun deleteMovie(accessToken:String,movieId:String) {
+        request("/rest/v1/movies?id=eq.$movieId","DELETE",null,accessToken)
+    }
+
+    fun getFavoriteIds(accessToken:String,userId:String):Set<String> {
         val json=request("/rest/v1/favorites?select=movie_id&user_id=eq.$userId","GET",null,accessToken) as JSONArray
         return (0 until json.length()).map { json.getJSONObject(it).getString("movie_id") }.toSet()
     }

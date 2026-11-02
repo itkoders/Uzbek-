@@ -150,8 +150,27 @@ alter table public.announcements enable row level security;
 
 drop policy if exists "profiles own read" on public.profiles;
 create policy "profiles own read" on public.profiles for select to authenticated using (id = auth.uid() or public.is_admin());
+-- Users cannot change role, ban state, or subscription status from the client.
+-- Profile changes that require privileged fields must go through a trusted server function.
 drop policy if exists "profiles own update" on public.profiles;
-create policy "profiles own update" on public.profiles for update to authenticated using (id = auth.uid() or public.is_admin()) with check (id = auth.uid() or public.is_admin());
+drop policy if exists "admin profiles manage" on public.profiles;
+create policy "admin profiles manage" on public.profiles for all to authenticated using (public.is_admin()) with check (public.is_admin());
+
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = public
+as $
+begin
+  insert into public.profiles (id, display_name)
+  values (new.id, coalesce(new.raw_user_meta_data ->> 'name', 'AlfaPlay foydalanuvchisi'))
+  on conflict (id) do nothing;
+  return new;
+end;
+$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 
 drop policy if exists "published movies read" on public.movies;
 create policy "published movies read" on public.movies for select to anon, authenticated using (is_published or public.is_admin());

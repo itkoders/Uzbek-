@@ -1,0 +1,6 @@
+{
+  "name": "AlfaPlay",
+  "description": "Kinopoisk va Telecom TV darajasidagi premium kino, serial va TV platformasi. Admin paneli, promo-kodlar, 4K HDR va boy kino kolleksiyasi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

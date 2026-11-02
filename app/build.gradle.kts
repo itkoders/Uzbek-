@@ -13,7 +13,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
     }
-    buildFeatures { compose = true }
+    buildFeatures {\n        compose = true\n        buildConfig = true\n    }\n    val supabaseUrl = (project.findProperty("SUPABASE_URL") as String?) ?: ""\n    val supabaseAnonKey = (project.findProperty("SUPABASE_ANON_KEY") as String?) ?: ""\n    defaultConfig {\n        buildConfigField("String", "SUPABASE_URL", "\\\"$supabaseUrl\\\"")\n        buildConfigField("String", "SUPABASE_ANON_KEY", "\\\"$supabaseAnonKey\\\"")\n    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -28,6 +28,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")\n    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
